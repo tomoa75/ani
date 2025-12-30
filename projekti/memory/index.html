@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+
+    <meta name="author" content="Piano2" />
+    <meta name="description" content="Memory igra" />
+    <meta name="keywords" content="memory, igra, vježba, piano2" />
+    <meta favicon="favicon.ico" />
+    <link rel="icon" href="favicon.ico" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Moja Igra" />
+
+    <title>Memory</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="./sounds.js" defer></script>
+    <script src="./scores.js" defer></script>
+    <script src="./timer.js" defer></script>
+    <script src="./code.js?v=3" defer></script>
+  </head>
+  <body>
+    <header>
+      <h6>Memory game by Moranduzzo T.</h6>
+      <div id="highscoreModal" class="modal">
+        <div class="modal-content">
+          <h4>🎉 Novi High Score!</h4>
+          <input
+            type="text"
+            id="hsIme"
+            placeholder="Upiši ime"
+            maxlength="12"
+          />
+          <button id="hsSpremi">Spremi</button>
+        </div>
+      </div>
+
+      <div id="izbornik">
+        <h4>Izaberite Težinu</h4>
+        <div class="menu">
+          <label
+            ><input type="radio" name="tezina" value="Lagano" />
+            😊Lagano
+          </label>
+
+          <label>
+            <input type="radio" name="tezina" value="Srednje" checked />
+            👍Srednje
+          </label>
+          <label>
+            <input type="radio" name="tezina" value="Teško" />
+            👏Teško
+          </label>
+        </div>
+
+        <p>Trenutna težina:<span id="tezina"></span></p>
+      </div>
+      <h4 id="start">Pokreni igru</h4>
+    </header>
+    <main>
+      <div id="container"></div>
+      <div id="pobjeda">
+        <p>Bravo! Igra je riješena!👌</p>
+        <p>Tvoji bodovi:<span class="punti"></span></p>
+      </div>
+
+      <div id="poraz" class="bezprikaza">Nažalost, Igra je izgubljena😒</div>
+      <div id="donji">
+        <div id="time"></div>
+
+        <div id="timer"></div>
+      </div>
+      <div id="leaderboard" class="bezprikaza">
+        <h2>🏆 Najbolji rezultati</h2>
+        <div class="okvir">
+          <div class="tezina-blok" data-tezina="Lagano">
+            <h5>Lagano</h5>
+            <ol class="lista" id="lb-Lagano"></ol>
+          </div>
+
+          <div class="tezina-blok" data-tezina="Srednje">
+            <h5>Srednje</h5>
+            <ol class="lista" id="lb-Srednje"></ol>
+          </div>
+
+          <div class="tezina-blok" data-tezina="Teško">
+            <h5>Teško</h5>
+            <ol class="lista" id="lb-Teško"></ol>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside>
+      <button type="reset" id="reset">Probaj ponovno!</button>
+    </aside>
+  </body>
+</html>

@@ -1,0 +1,508 @@
+body {
+  color: #333;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: antiquewhite;
+  text-align: center;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+h2{
+  margin: 0;
+}
+h5{
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: rgb(3, 48, 14);
+}
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+header h1 {
+  width: 100%;
+  text-align: center;
+}
+.zelena{
+  background-color: rgb(23, 236, 144);
+}
+.zuta{
+  background-color: rgb(236, 222, 23);
+}
+
+#donji {
+  display: flex;
+  width: 30%;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  margin: 0 auto;
+  
+}
+#time {
+  font-weight: bold;
+  width: fit-content;
+  padding: 5px 5px;
+  border-radius: 5px;
+  position: fixed;
+}
+#time.flash {
+  
+  animation: 1.5s flash ease-in-out;
+  position: fixed;
+  z-index: 2;
+  
+}
+#timer {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  font-weight: bold;
+  white-space: pre-line;
+}
+@keyframes flash {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+#izbornik {
+  position: relative;
+  background-color: rgb(207, 177, 236);
+  text-align: center;
+  width: fit-content;
+  border-radius: 20px;
+  margin: 0 auto;
+  padding: 5px;
+ 
+}
+label {
+  border: #333 dotted 1px;
+  margin: 2px;
+}
+#start {
+  background-color: rgb(236, 222, 23);
+  font-size: 1.5rem;
+  width: fit-content;
+  margin: 20px auto;
+  padding: 5px 8px;
+
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+
+
+.bezprikaza {
+  display: none;
+}
+.slika {
+  position: relative;
+  width: auto;
+  height: 60px;
+  background: rgb(207, 177, 236);
+  margin: 5px;
+
+  text-align: center;
+  line-height: 60px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.prednja,
+.zadnja {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  inset: 0;
+}
+.zadnja {
+  background-color: rgb(236, 222, 23);
+  font-size: 1.6rem;
+  border-radius: 5px;
+  display: none;
+}
+#container {
+  width: 100vw;
+  position: relative;
+  margin: 50px auto;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  /* 3 reda fiksno */
+  grid-template-rows: repeat(3, 1fr);
+  /* redovi se pune horizontalno */
+  grid-auto-flow: column;
+  /* širina stupca neka bude automatska */
+  grid-auto-columns: 120px;
+  gap: 10px;
+}
+#container.aktivna {
+  display: grid;
+}
+/* Klasa za otvorenu karticu */
+.slika.opened .prednja {
+  display: none;
+}
+.slika.opened .zadnja {
+  display: flex;
+}
+
+.zabrana {
+  pointer-events: none;
+  opacity: 0.8;
+}
+.pogodjena {
+  border: #333 solid 5px;
+  box-sizing: border-box;
+  font-style: italic;
+}
+header.hide-mobile {
+  display: none;
+}
+
+#pobjeda {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  background-color: rgb(236, 222, 23);
+  border-radius: 25px;
+  font-weight: bold;
+  animation: nestani 5s ease forwards;
+  animation-delay: 2s;
+}
+@keyframes nestani {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes sastani {
+  to {
+    opacity: 1;
+  }
+}
+#pobjeda.aktivna {
+  display: block;
+}
+
+
+
+#poraz {
+  position: fixed;
+  top: 39%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  background-color: rgb(23, 236, 144);
+  border-radius: 25px;
+  font-weight: bold;
+  animation: nestani 5s ease forwards;
+  animation-delay: 2s;
+}
+#leaderboard {
+  position: relative;
+
+  width: 50%;
+
+  opacity: 0;
+
+  margin: 0 auto;
+  padding: 2px;
+  background: rgb(207, 177, 236);
+  border-radius: 20px;
+  font-family: Arial, sans-serif;
+
+  z-index: 4;
+  animation: sastani 5s ease forwards;
+  animation-delay: 1s;
+}
+.okvir {
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-around;
+
+  width: 90%;
+}
+
+#leaderboard h2 {
+  text-align: center;
+  margin-bottom: 1px;
+  width: 100%;
+}
+
+.tezina-blok {
+  margin: 6px 18px;
+  padding: 12px;
+  background: rgb(19, 151, 94);
+  border-radius: 10px;
+  width: 33%;
+}
+
+.tezina-blok h3 {
+  margin: 0 0 10px;
+  text-align: center;
+  color: #f4d03f;
+}
+
+.lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.lista li:nth-child(1) {
+  background: #d4af37;
+  color: #000;
+}
+.lista li:nth-child(2) {
+  background: #c0c0c0;
+  color: #000;
+}
+.lista li:nth-child(3) {
+  background: #cd7f32;
+  color: #000;
+}
+
+.prazno {
+  text-align: center;
+  opacity: 0.6;
+}
+#reset {
+  position: fixed;
+  bottom: 2svh;
+  right: 4vw;
+  width: auto;
+  min-width: 44px;
+  z-index: 6;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background-color: rgb(207, 177, 236);
+}
+
+.modal {
+  display: none; /* skriven po defaultu */
+  position: fixed;
+  inset: 0;
+  background: rgb(100, 100, 190); /* poluprozirna pozadina */
+  width: 100%;
+  height: 100%;
+
+  justify-content: center;
+  align-items: center;
+  z-index: 13;
+}
+
+.modal-content {
+  background: #6b0daa;
+  padding: 16px;
+  border-radius: 16px;
+  text-align: center;
+  color: #fff;
+  min-width: 30%;
+  height: 30%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+  color: #f4d03f;
+  font-size: 1.5rem;
+}
+
+.modal-content input {
+  width: 80%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.modal-content button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #f4d03f;
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-content button:hover {
+  background: #d4af37;
+}
+#close-btn {
+  margin-top: 10px;
+  background: #e74c3c;
+  color: #fff;
+}
+@media (max-width: 800px) {
+  /* Body i html fullscreen */
+  html,
+  body {
+    width: 100%;
+    height: 100svh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    
+  }
+  .modal {
+    align-items: center;
+    justify-content: center;
+    height: 100svh;
+  }
+  .modal-content {
+    min-width: 70%;
+    height: auto;
+  }
+
+  /* Header, scoreboard i izbornik kao overlay */
+  header,
+  
+  #izbornik {
+    position: absolute;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: 99%;
+  }
+  body.game-active header {
+    display: none;
+  }
+
+
+  header {
+    top: 0svh;
+  }
+  header h1 {
+    font-size: 2rem;
+  }
+  #izbornik {
+    top: 42svh;
+  }
+  .menu {
+    display: flex;
+    justify-content: space-around;
+  }
+  #time {
+    position: fixed;
+    bottom: 5svh;
+    left: 40%;
+    transform: translateX(-50%);
+  }
+  #timer {
+    position: fixed;
+    font-size: 1rem;
+    bottom: 0svh;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  /* igra je po defaultu skrivena */
+  #container {
+    display: none;
+  }
+
+  /* igra je vidljiva samo kad je game-active */
+  body.cont-active #container {
+    display: grid;
+  }
+
+  /* Fullscreen container za igru */
+  #container {
+    position: fixed;
+    inset: 0;
+    grid-template-rows: none;
+    align-content: center;
+    grid-auto-rows: max-content;
+    gap: 2px 2px;
+
+    width: 100svw;
+    height: 100svh;
+
+    margin: 0;
+
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  /* Kartice */
+  .slika {
+    width: clamp(98px, 12vmin, 64px);
+    height: clamp(42px, 12vmin, 64px);
+    margin: 2px;
+    font-size: 1.5rem;
+  }
+
+  .zadnja {
+    font-size: 1.4rem;
+  }
+
+  /* Reset gumb */
+  #reset {
+    bottom: 0svh;
+    right: 1vw;
+    width: auto;
+    min-width: 44px;
+    z-index: 12;
+  }
+  #leaderboard {
+    position: fixed; /* fiksno na ekran */
+    top: 48%; /* vertikalno centriranje */
+    left: 50%; /* horizontalno centriranje */
+    transform: translate(-50%, -50%);
+    width: 95%; /* gotovo puni ekran */
+    margin: 0; 
+    padding: 1px; /* manji padding za mobilni */
+    border-radius: 15px; /* manje zaobljenje */
+    z-index: 12;
+    
+  }
+  .okvir {
+    max-width: 90%;
+    flex-direction: column;
+  }
+  .tezina-blok {
+    margin: 3px auto;
+    padding: 6px;
+    border-radius: 10px;
+    width: 63%;
+  }
+}
+@media (max-width: 800px) and (orientation: landscape) {
+  .okvir {
+    max-width: 99%;
+    flex-direction: row;
+  }
+
+  .tezina-blok {
+    margin: 6px auto;
+    padding: 12px;
+    border-radius: 10px;
+    width: 25%;
+    
+  }
+}
