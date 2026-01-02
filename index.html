@@ -5,7 +5,7 @@
     <title>Ani, Obrt za trgovinu, Prijevoz i Usluge</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
         background: #f8f8f8;
         margin: 0;
         padding: 0;
@@ -24,6 +24,18 @@
       main {
         padding: 30px;
         text-align: center;
+      }
+      #primjeri {
+        margin-top: 40px;
+        text-align: left;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      ul {
+        list-style: none;
+        padding: 0; /* uklanja default padding */
+        margin: 0; /* uklanja default margin */
       }
     </style>
   </head>
@@ -46,24 +58,26 @@
       <p>Hvala što ste posjetili našu stranicu!</p>
       <p class="vel">STRANICA JE TRENUTNO U IZRADI!</p>
       <p>Uskoro nudimo usluge izrade Web stranica.</p>
-      <h3>Primjeri studentskih radova:</h3>
-      <ul>
-        <li>
-          <a href="./projekti/memory/index.html" target="_blank"
-            >Memory Igra(html,css,js)</a
-          >
-        </li>
-        <li>
-          <a href="https://example.com/student2" target="_blank"
-            >Studentski rad 2</a
-          >
-        </li>
-        <li>
-          <a href="https://example.com/student3" target="_blank"
-            >Studentski rad 3</a
-          >
-        </li>
-      </ul>
+      <div id="primjeri">
+        <h3>Primjeri studentskih radova:</h3>
+        <ul>
+          <li>
+            <a href="./projekti/memory/index.html" target="_blank"
+              >Memory Igra(html,css,js)</a
+            >
+          </li>
+          <li>
+            <a href="https://www.soleusmassage.hr" target="_blank"
+              >Stranica za masaže</a
+            >
+          </li>
+          <li>
+            <a href="https://example.com/student3" target="_blank"
+              >Studentski rad 3</a
+            >
+          </li>
+        </ul>
+      </div>
     </main>
     <style>
       .vel {

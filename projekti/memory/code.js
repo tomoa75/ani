@@ -42,7 +42,7 @@ function azuriraj() {
   tezina.textContent = stanje.value;
   trenutno_stanje = stanje.value;
   timerDisplay.textContent =
-    "Vrijeme za igru:\n"  + brojPoTezini[trenutno_stanje] * 4 + " sekunda";
+    "Vrijeme za igru:\n" + brojPoTezini[trenutno_stanje] * 4 + " sekunda";
   inicijalizirajElemente();
 
   console.log(trenutno_stanje);
@@ -96,13 +96,12 @@ function provjera(arr) {
   } else {
     preostaleSekunde -= 1; // oduzmi 1 sekunde za svaki promašaj
     time.textContent = "-1 sek.!";
-    
+
     svirajfail();
     time.classList.add("flash", "zelena");
     setTimeout(() => {
-      time.classList.remove("flash", "zelena" );
+      time.classList.remove("flash", "zelena");
       time.textContent = "";
-      
     }, 1500);
 
     // zatvori ih nakon 1 sekunde
@@ -125,6 +124,7 @@ function provjera(arr) {
 //POBJEDA
 
 async function krajIgre() {
+  reset.classList.add("bezprikaza");
   document.body.classList.remove("cont-active");
   container.classList.remove("aktivna");
   document.getElementById("pobjeda").classList.add("aktivna");
@@ -137,7 +137,6 @@ async function krajIgre() {
     .querySelectorAll(".punti")
     .forEach((el) => (el.textContent = bodovi));
   console.log("Bodovi:", bodovi);
-  reset.textContent = "Nova igra";
 
   atariWin();
   zaustaviOdbrojavanje();
@@ -147,10 +146,13 @@ async function krajIgre() {
     pokažiHighscoreModal(async (ime) => {
       await spremiHighScore(ime, bodovi, trenutno_stanje);
       svirajpogodak();
-      await ucitajLeaderboard();
+      reset.classList.remove("bezprikaza"); // 🔥 SAD smije
+      reset.textContent = "Nova igra";
     });
   } else {
     await ucitajLeaderboard();
+    reset.classList.remove("bezprikaza");
+    reset.textContent = "Nova igra";
   }
 }
 
@@ -159,7 +161,7 @@ function izgubljenaIgra() {
   document.body.classList.remove("cont-active");
   container.classList.remove("aktivna");
   document.getElementById("poraz").classList.remove("bezprikaza");
-  
+
   svirajtuzno();
   ucitajLeaderboard();
   bodovi = 0; // reset bodova na 0
@@ -176,7 +178,7 @@ function ponovnoPokreni() {
   otvorene = [];
   klikBlokada = false;
   container.classList.remove("aktivna");
-  
+
   document.getElementById("pobjeda").classList.remove("aktivna");
 
   document.getElementById("poraz").classList.add("bezprikaza");
@@ -261,7 +263,7 @@ odabir.forEach((dio) => {
 });
 
 nestajuca.addEventListener("click", async () => {
-    /* 🔥 FULLSCREEN – MORA BITI PRVO I U KLIKU */
+  /* 🔥 FULLSCREEN – MORA BITI PRVO I U KLIKU */
   const elem = document.documentElement;
   if (elem.requestFullscreen) {
     await elem.requestFullscreen();

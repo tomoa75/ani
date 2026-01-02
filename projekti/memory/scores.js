@@ -1,11 +1,9 @@
 const pokaziSveRekorde = document.getElementById("leaderboard");
 const header = document.querySelector("header");
 const SUPABASE_URL = "https://cftphiqouyokqspxdpmz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdHBoaXFvdXlva3FzcHhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODg0MTQsImV4cCI6MjA4MTU2NDQxNH0.mX07DQ3lIwsxs0NJXYdYVBCh7GnOth4zJxEDhpPDxEw";
-const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdHBoaXFvdXlva3FzcHhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODg0MTQsImV4cCI6MjA4MTU2NDQxNH0.mX07DQ3lIwsxs0NJXYdYVBCh7GnOth4zJxEDhpPDxEw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 console.log("Supabase klijent inicijaliziran:", supabaseClient);
 
@@ -55,15 +53,13 @@ async function ulaziUHighScore(bodovi, tezina) {
 }
 
 async function spremiHighScore(ime, bodovi, tezina) {
-  await supabaseClient
-    .from("scores")
-    .insert([
-      {
-        name: ime,
-        bodovi: bodovi,
-        difficulty: tezina
-      }
-    ]);
+  await supabaseClient.from("scores").insert([
+    {
+      name: ime,
+      bodovi: bodovi,
+      difficulty: tezina,
+    },
+  ]);
 
   // osvježi leaderboard
   await ucitajLeaderboard();
@@ -74,22 +70,23 @@ function pokažiHighscoreModal(callback) {
   const input = document.getElementById("hsIme");
   const btn = document.getElementById("hsSpremi");
 
-  modal.style.display = "flex";
+  modal.classList.add("active");
   input.value = "";
-  input.focus();
 
-  // spremi klikom
-  btn.onclick = () => {
+  setTimeout(() => input.focus(), 100); // mobitel-safe
+
+  const handler = async () => {
     const ime = input.value.trim() || "Igrač";
-    modal.style.display = "none";
+
+    input.blur(); // zatvori virtualnu tipkovnicu
+
+    modal.classList.remove("active");
+
+    btn.removeEventListener("pointerup", handler);
     callback(ime);
   };
 
-  // spremi Enter tipkom
-  input.onkeydown = (e) => {
-    if (e.key === "Enter") {
-      btn.click();
-    }
-  };
+  btn.addEventListener("pointerup", handler);
 }
+
 ucitajLeaderboard();
