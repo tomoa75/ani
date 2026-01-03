@@ -110,6 +110,8 @@ label {
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  transform-style: preserve-3d;
 }
 .prednja,
 .zadnja {
@@ -118,14 +120,17 @@ label {
   justify-content: center;
   align-items: center;
   inset: 0;
+  backface-visibility: hidden;
 }
 .zadnja {
   background-color: rgb(236, 222, 23);
   font-size: 1.6rem;
   border-radius: 5px;
-  display: none;
+  transform: rotateY(180deg);
+  
 }
 #container {
+  
   width: 100vw;
   position: relative;
   margin: 50px auto;
@@ -144,22 +149,33 @@ label {
   display: grid;
 }
 /* Klasa za otvorenu karticu */
-.slika.opened .prednja {
-  display: none;
-}
-.slika.opened .zadnja {
-  display: flex;
+.slika.opened {
+  transform: rotateY(180deg);
+  
 }
 
 .zabrana {
   pointer-events: none;
   opacity: 0.8;
 }
-.pogodjena {
+.slika.pogodjena {
   border: #333 solid 5px;
   box-sizing: border-box;
   font-style: italic;
+  transform: rotateY(0deg); /* važno: resetiraj rotaciju slike */
 }
+  
+.slika.pogodjena .prednja {
+  display: none; /* prednja nestaje */
+}
+
+.slika.pogodjena .zadnja {
+  display: flex; /* zadnja ostaje vidljiva */
+  transform: rotateY(0deg); /* važno: resetiraj rotaciju zadnje */
+  
+}
+
+
 header.hide-mobile {
   display: none;
 }

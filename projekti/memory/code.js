@@ -1,5 +1,6 @@
 //globalne varijable
 let klikBlokada = false;
+
 const izbornik = document.getElementById("izbornik");
 const container = document.getElementById("container");
 const tezina = document.getElementById("tezina");
@@ -80,9 +81,11 @@ function provjera(arr) {
     b.element.dataset.ime === c.element.dataset.ime
   ) {
     console.log("pogodak!");
+    
     preostaleSekunde += 3; // dodaj 3 sekunde za svaki pogodak
     time.textContent = "+3 sek.!";
     time.classList.add("flash", "zuta");
+    
     setTimeout(() => {
       time.classList.remove("flash", "zuta");
       time.textContent = "";
@@ -91,6 +94,8 @@ function provjera(arr) {
     klikBlokada = false;
     [a, b, c].forEach((item) => {
       item.element.parentElement.classList.add("zabrana", "pogodjena"); // ne može se kliknuti
+      
+      
     });
     // ostavi kartice otvorene ili ukloni iz igre
   } else {
@@ -115,6 +120,7 @@ function provjera(arr) {
   const pogodjene = document.querySelectorAll(".pogodjena").length;
   if (pogodjene === brojPoTezini[trenutno_stanje]) {
     klikBlokada = true;
+    time.classList.add("bezprikaza");
     krajIgre();
   }
 
@@ -124,11 +130,13 @@ function provjera(arr) {
 //POBJEDA
 
 async function krajIgre() {
+  setTimeout(() => {
   reset.classList.add("bezprikaza");
   document.body.classList.remove("cont-active");
   container.classList.remove("aktivna");
   document.getElementById("pobjeda").classList.add("aktivna");
   timerDisplay.textContent = "";
+  }, 300);
 
   // izračun bodova
 
@@ -158,6 +166,7 @@ async function krajIgre() {
 
 //PORAZ
 function izgubljenaIgra() {
+  time.classList.add("bezprikaza");
   document.body.classList.remove("cont-active");
   container.classList.remove("aktivna");
   document.getElementById("poraz").classList.remove("bezprikaza");
@@ -172,6 +181,7 @@ function izgubljenaIgra() {
 
 reset.addEventListener("click", ponovnoPokreni);
 function ponovnoPokreni() {
+  time.classList.remove("bezprikaza");
   document.body.classList.remove("game-active");
   document.body.classList.remove("cont-active");
   bodovi = 0;
@@ -243,8 +253,9 @@ function inicijalizirajElemente() {
       console.log(straznje[i]);
       if (otvorene.length === 3) {
         klikBlokada = true;
-        provjera(otvorene);
+        
         setTimeout(() => {
+          provjera(otvorene);
           klikBlokada = false;
         }, 300);
       }
