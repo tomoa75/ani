@@ -1,0 +1,225 @@
+/* eslint-disable */
+// --- SUPABASE INICIJALIZACIJA ---
+const { createClient } = supabase;
+
+const _supabase = createClient(
+  "https://cftphiqouyokqspxdpmz.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdHBoaXFvdXlva3FzcHhkcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODg0MTQsImV4cCI6MjA4MTU2NDQxNH0.mX07DQ3lIwsxs0NJXYdYVBCh7GnOth4zJxEDhpPDxEw",
+);
+
+// --- POMOĆNA FUNKCIJA ZA BOJU GUMBA ---
+function osvjeziIzgledGumba(li) {
+  const textarea = li.querySelector(".detalji");
+  const infoGumb = li.querySelector(".info");
+  if (textarea.value.trim() !== "") {
+    infoGumb.style.backgroundColor = "red";
+    infoGumb.style.color = "white";
+    infoGumb.textContent = "Detalji";
+  } else {
+    infoGumb.style.backgroundColor = "";
+    infoGumb.style.color = "";
+    infoGumb.textContent = "Info";
+  }
+}
+
+// --- DOM ELEMENTI ---
+const unos = document.querySelector(".unos");
+const gumbDodaj = document.querySelector(".gumb-dodaj");
+const lista = document.querySelector(".lista");
+const naslov = document.getElementById("naslov");
+const izbor = document.getElementById("izbor");
+
+let blokirajSpremanje = false;
+
+// --- FUNKCIJE ---
+function stvoriElementListe(tekst, obavljen) {
+  const li = document.createElement("li");
+  if (obavljen) li.classList.add("prekrizeno");
+  li.innerHTML = `
+        <input type="checkbox" class="prekrizi" ${obavljen ? "checked" : ""} />
+        <span class="tekst">${tekst}</span>
+        <button class="ukloni" type="button">X</button>
+        <button class="info" type="button">Info</button>
+        <textarea class="detalji" placeholder="Unesite dodatne detalje..." rows="5" cols="45"></textarea>
+        <button class="spremi" type="button">Spremi</button>
+    `;
+  lista.appendChild(li);
+  return li;
+}
+
+function osvjeziNaslov() {
+  naslov.textContent = izbor.options[izbor.selectedIndex].text;
+}
+
+async function spremiUBazu() {
+  const zadaci = Array.from(lista.querySelectorAll("li")).map((li) => ({
+    profile_id: izbor.value,
+    tekst: li.querySelector(".tekst").innerText,
+    obavljen: li.classList.contains("prekrizeno"),
+    detalji: li.querySelector(".detalji").value || "",
+  }));
+
+  if (zadaci.length === 0) return; // SIGURNOSNA KOČNICA
+
+  const { error } = await _supabase
+    .from("todo_tasks")
+    .upsert(zadaci, { onConflict: 'profile_id, tekst' }); // Ne briše ništa, samo ažurira!
+}
+
+function spremiLokalno() {
+  if (blokirajSpremanje) return;
+  const profil = izbor.value;
+  const podaci = JSON.parse(localStorage.getItem("mojToDo")) || {};
+  podaci[profil] = Array.from(lista.querySelectorAll("li")).map((li) => ({
+    tekst: li.querySelector(".tekst").innerText,
+    obavljen: li.classList.contains("prekrizeno"),
+    detalji: li.querySelector(".detalji").value || "",
+  }));
+  localStorage.setItem("mojToDo", JSON.stringify(podaci));
+}
+
+async function spremiSve() {
+  spremiLokalno();
+  if (navigator.onLine) await spremiUBazu();
+}
+
+async function povuciIzSupabase() {
+  blokirajSpremanje = true;
+  lista.innerHTML = "";
+  const trenutniProfil = izbor.value;
+
+  const { data, error } = await _supabase
+    .from("todo_tasks")
+    .select("*")
+    .eq("profile_id", trenutniProfil)
+    .order("id", { ascending: true });
+
+  if (error || !data || data.length === 0) {
+    ucitajZadatkeIzMemorije(); // Ako nema u bazi, uzmi iz localstorage
+    blokirajSpremanje = false;
+    return;
+  }
+
+  data.forEach((z) => {
+    const li = stvoriElementListe(z.tekst, z.obavljen);
+    li.querySelector(".detalji").value = z.detalji || "";
+    osvjeziIzgledGumba(li); // <--- Crveni gumb kod povlačenja
+  });
+
+  blokirajSpremanje = false;
+}
+
+function ucitajZadatkeIzMemorije() {
+  const profil = izbor.value;
+  const podaci = JSON.parse(localStorage.getItem("mojToDo")) || {};
+  const mojiZadaci = podaci[profil] || [];
+
+  mojiZadaci.forEach((z) => {
+    const li = stvoriElementListe(z.tekst, z.obavljen);
+    li.querySelector(".detalji").value = z.detalji || "";
+    osvjeziIzgledGumba(li); // <--- Crveni gumb kod memorije
+  });
+}
+
+async function sinkronizirajOfflinePodatke() {
+  const profil = izbor.value;
+  const podaci = JSON.parse(localStorage.getItem("mojToDo")) || {};
+  const lokalni = podaci[profil];
+
+  if (!lokalni || lokalni.length === 0) return;
+
+  // Koristi upsert umjesto delete + insert
+  const { error } = await _supabase.from("todo_tasks").upsert(lokalni.map(z => ({
+      profile_id: profil,
+      ...z
+  })));
+
+  if (!error) {
+      console.log("Sinkronizacija uspjela. Podatke ostavljam u LocalStorage za svaki slučaj.");
+      // Ovdje NE brišemo localStorage. Neka stoji.
+  }
+}
+
+// --- EVENT LISTENERI ---
+document.addEventListener("DOMContentLoaded", async () => {
+  osvjeziNaslov();
+  if (navigator.onLine) {
+    await sinkronizirajOfflinePodatke();
+    await povuciIzSupabase();
+  } else {
+    ucitajZadatkeIzMemorije();
+  }
+});
+
+window.addEventListener("online", async () => {
+  console.log("Internet ponovno dostupan – pokrećem sinkronizaciju");
+
+  await sinkronizirajOfflinePodatke();
+  await povuciIzSupabase();
+});
+
+izbor.addEventListener("change", async () => {
+  osvjeziNaslov();
+  if (navigator.onLine) {
+    await sinkronizirajOfflinePodatke();
+    await povuciIzSupabase();
+  } else {
+    ucitajZadatkeIzMemorije();
+  }
+});
+
+gumbDodaj.addEventListener("click", (e) => {
+  const tekst = unos.value.trim();
+  if (!tekst) return;
+  stvoriElementListe(tekst, false);
+  spremiSve();
+  unos.value = "";
+});
+
+lista.addEventListener("click", async (e) => {
+    const kliknut = e.target;
+    const li = kliknut.closest("li");
+    if (!li) return;
+
+    // --- 1. LOGIKA ZA UKLANJANJE ---
+    if (kliknut.classList.contains("ukloni")) {
+        const tekstZadatka = li.querySelector(".tekst").innerText;
+        const trenutniProfil = izbor.value;
+
+        li.remove(); // Brišemo iz HTML-a
+
+        if (navigator.onLine) {
+            try {
+                await _supabase
+                    .from("todo_tasks")
+                    .delete()
+                    .eq("profile_id", trenutniProfil)
+                    .eq("tekst", tekstZadatka);
+                console.log("Obrisano s baze.");
+            } catch (err) {
+                console.error("Greška kod brisanja:", err.message);
+            }
+        }
+        await spremiSve(); // Ažurira LocalStorage odmah
+    } 
+
+    // --- 2. LOGIKA ZA PREKRIŽITI (CHECKBOX) ---
+    else if (kliknut.classList.contains("prekrizi")) {
+        li.classList.toggle("prekrizeno", kliknut.checked);
+        await spremiSve();
+    } 
+
+    // --- 3. LOGIKA ZA INFO GUMB (OTVARANJE TEXTAREA) ---
+    else if (kliknut.classList.contains("info")) {
+        li.querySelector(".detalji").classList.toggle("prikazi-detalje");
+        li.querySelector(".spremi").classList.toggle("prikazi");
+    } 
+
+    // --- 4. LOGIKA ZA SPREMANJE DETALJA ---
+    else if (kliknut.classList.contains("spremi")) {
+        osvjeziIzgledGumba(li);
+        li.querySelector(".detalji").classList.remove("prikazi-detalje");
+        kliknut.classList.remove("prikazi");
+        await spremiSve();
+    }
+});

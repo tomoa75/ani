@@ -1,0 +1,113 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: lightyellow;
+  text-align: left;
+
+  margin-left: 30%;
+}
+
+
+
+.prekrizeno {
+  text-decoration: line-through;
+  color: gray;
+}
+
+input[type="text"] {
+  border: 2px solid orange;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 26px;
+  max-width: 100%; /* Ovo sprječava da pobjegne van ekrana */
+  width: auto;     /* Ili postavi fiksno tipa 300px ako želiš */
+}
+
+input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+button {
+  background-color: orange;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 15px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s; /* Lagani prijelaz kad klikneš */
+}
+
+button:hover {
+  filter: brightness(0.9); /* Malo potamni kad prođeš mišem */
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  font-size: 22px;
+}
+
+select {
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+textarea {
+  display: none;
+  margin-top: 10px;
+  font-size: 18px;
+  padding: 10px;
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+.prikazi-detalje {
+  display: block;
+}
+
+button.spremi {
+  display: none;
+  font-size: 13px;
+  padding: 5px 10px; /* Dodao malo paddinga da ne bude skroz "mršav" */
+  background-color: red;
+}
+
+button.spremi.prikazi {
+  display: inline-block;
+}
+/* Stil za tekst zadatka unutar liste */
+.tekst {
+  display: inline-block;
+  word-wrap: break-word;     /* Prelama duge riječi */
+  overflow-wrap: break-word; /* Moderniji standard za prelamanje */
+  max-width: 60%;            /* Sprječava da tekst "izgura" gumbe X i Info */
+  vertical-align: middle;
+}
+@media (max-width: 480px) {
+  body {
+    margin-left: 0;
+    padding: 10px; /* Da tekst ne udara u rubove ekrana */
+  }
+
+  .detalji {
+    width: 100%;
+    box-sizing: border-box; /* Da padding ne raširi textarea van ekrana */
+  }
+
+  input[type="text"], select, button {
+    font-size: 16px; /* Lakše za tipkanje na mobitelu */
+    width: 100%;    /* Na mobitelu je bolje da su gumbi jedan ispod drugog */
+    margin-bottom: 10px;
+  }
+
+  ul {
+    font-size: 16px; /* 10px je ipak premalo, nećemo ništa vidjeti bez povećala */
+  }
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>
+      My TODO List-<span id="naslov"></span>
+      <select id="izbor">
+        <option value="trafikaPiano" selected>Trafika Piano</option>
+        <option value="tomo">Tomo</option>
+        <option value="dino">Dino</option>
+      </select>
+    </h1>
+    <div class="kontejner-za-unos">
+      <input class="unos" placeholder="Dodaj zadatak" type="text" />
+      <button class="gumb-dodaj" type="button">Dodaj</button>
+    </div>
+    <ul class="lista"></ul>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="script4.js"></script>
+  </body>
+</html>
