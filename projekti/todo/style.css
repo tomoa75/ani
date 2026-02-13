@@ -12,10 +12,6 @@ body {
 
 
 
-.prekrizeno {
-  text-decoration: line-through;
-  color: gray;
-}
 
 input[type="text"] {
   border: 2px solid orange;
@@ -85,29 +81,46 @@ button.spremi {
 button.spremi.prikazi {
   display: inline-block;
 }
-/* Stil za tekst zadatka unutar liste */
+
 .tekst {
-  display: inline-block;
-  word-wrap: break-word;     /* Prelama duge riječi */
-  overflow-wrap: break-word; /* Moderniji standard za prelamanje */
+  
+  overflow-wrap: break-word;
+  
   max-width: 60%;            /* Sprječava da tekst "izgura" gumbe X i Info */
   vertical-align: middle;
+  line-height: 1.2;
 }
-@media (max-width: 480px) {
+.prekrizeno {
+  text-decoration: line-through;
+  color: gray;
+}
+
+@media (max-width: 800px) {
   body {
     margin-left: 0;
     padding: 10px; /* Da tekst ne udara u rubove ekrana */
   }
+
 
   .detalji {
     width: 100%;
     box-sizing: border-box; /* Da padding ne raširi textarea van ekrana */
   }
 
-  input[type="text"], select, button {
+  input[type="text"], select{
     font-size: 16px; /* Lakše za tipkanje na mobitelu */
     width: 100%;    /* Na mobitelu je bolje da su gumbi jedan ispod drugog */
     margin-bottom: 10px;
+  }
+  .tekst::after {
+    content:"\A";
+    white-space: pre;
+  }
+    button.info,button.ukloni{
+    display: inline-block;
+    font-size: 20px;
+    width: 49%;
+    margin-bottom: 20px;
   }
 
   ul {
