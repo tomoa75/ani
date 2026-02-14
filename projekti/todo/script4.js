@@ -36,6 +36,8 @@ function stvoriElementListe(tekst, obavljen) {
   const li = document.createElement("li");
   if (obavljen) li.classList.add("prekrizeno");
   li.innerHTML = `
+        <button class="gore" type="button">▲</button>
+        <button class="dolje" type="button">▼</button>
         <input type="checkbox" class="prekrizi" ${obavljen ? "checked" : ""} />
         <span class="tekst">${tekst}</span>
         <button class="ukloni" type="button">X</button>
@@ -52,28 +54,49 @@ function osvjeziNaslov() {
 }
 
 async function spremiUBazu() {
-  const zadaci = Array.from(lista.querySelectorAll("li")).map((li) => ({
-    profile_id: izbor.value,
+  const trenutniProfil = izbor.value;
+  const zadaci = Array.from(lista.querySelectorAll("li")).map((li, index) => ({
+    profile_id: trenutniProfil,
     tekst: li.querySelector(".tekst").innerText,
     obavljen: li.classList.contains("prekrizeno"),
     detalji: li.querySelector(".detalji").value || "",
+    poredak: index 
   }));
 
-  if (zadaci.length === 0) return; // SIGURNOSNA KOČNICA
+  if (zadaci.length === 0) {
+      // Ako je lista prazna, samo obriši sve za taj profil u bazi
+      await _supabase.from("todo_tasks").delete().eq("profile_id", trenutniProfil);
+      return;
+  }
 
-  const { error } = await _supabase
+  // 1. Prvo obrišemo sve stare zadatke za taj profil
+  const { error: deleteError } = await _supabase
     .from("todo_tasks")
-    .upsert(zadaci, { onConflict: 'profile_id, tekst' }); // Ne briše ništa, samo ažurira!
+    .delete()
+    .eq("profile_id", trenutniProfil);
+
+  if (deleteError) {
+      console.error("Greška pri čišćenju baze:", deleteError);
+      return;
+  }
+
+  // 2. Ubacimo novi, svježi niz s točnim poretkom
+  const { error: insertError } = await _supabase
+    .from("todo_tasks")
+    .insert(zadaci);
+
+  if (insertError) console.error("Greška pri spremanju:", insertError);
 }
 
 function spremiLokalno() {
   if (blokirajSpremanje) return;
   const profil = izbor.value;
   const podaci = JSON.parse(localStorage.getItem("mojToDo")) || {};
-  podaci[profil] = Array.from(lista.querySelectorAll("li")).map((li) => ({
+  podaci[profil] = Array.from(lista.querySelectorAll("li")).map((li,index) => ({
     tekst: li.querySelector(".tekst").innerText,
     obavljen: li.classList.contains("prekrizeno"),
     detalji: li.querySelector(".detalji").value || "",
+    poredak:index
   }));
   localStorage.setItem("mojToDo", JSON.stringify(podaci));
 }
@@ -92,7 +115,7 @@ async function povuciIzSupabase() {
     .from("todo_tasks")
     .select("*")
     .eq("profile_id", trenutniProfil)
-    .order("id", { ascending: true });
+    .order("poredak", { ascending: true });
 
   if (error || !data || data.length === 0) {
     ucitajZadatkeIzMemorije(); // Ako nema u bazi, uzmi iz localstorage
@@ -128,15 +151,20 @@ async function sinkronizirajOfflinePodatke() {
 
   if (!lokalni || lokalni.length === 0) return;
 
-  // Koristi upsert umjesto delete + insert
-  const { error } = await _supabase.from("todo_tasks").upsert(lokalni.map(z => ({
+  // 1. Obriši stare da napraviš mjesta za lokalne s točnim poretkom
+  await _supabase.from("todo_tasks").delete().eq("profile_id", profil);
+
+  // 2. Ubaci lokalne
+  const { error } = await _supabase.from("todo_tasks").insert(lokalni.map(z => ({
       profile_id: profil,
-      ...z
+      tekst: z.tekst,
+      obavljen: z.obavljen,
+      detalji: z.detalji || "",
+      poredak: z.poredak // Koristimo onaj index koji je spremljen u memoriji
   })));
 
   if (!error) {
-      console.log("Sinkronizacija uspjela. Podatke ostavljam u LocalStorage za svaki slučaj.");
-      // Ovdje NE brišemo localStorage. Neka stoji.
+      console.log("Sinkronizacija uspjela.");
   }
 }
 
@@ -180,6 +208,24 @@ lista.addEventListener("click", async (e) => {
     const kliknut = e.target;
     const li = kliknut.closest("li");
     if (!li) return;
+
+// --- STRELICA GORE ---
+    if (kliknut.classList.contains("gore")) {
+        const onajIznad = li.previousElementSibling;
+        if (!onajIznad) return; 
+        lista.insertBefore(li, onajIznad);
+        await spremiSve();
+        return; // Završi s ovim klikom
+    }
+
+    // --- STRELICA DOLJE ---
+    if (kliknut.classList.contains("dolje")) {
+        const onajIspod = li.nextElementSibling;
+        if (!onajIspod) return;
+        lista.insertBefore(onajIspod, li);
+        await spremiSve();
+        return;
+    }
 
     // --- 1. LOGIKA ZA UKLANJANJE ---
     if (kliknut.classList.contains("ukloni")) {
