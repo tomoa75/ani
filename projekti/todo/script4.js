@@ -194,6 +194,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   new Sortable(lista, {
     animation: 150,
     ghostClass: 'ghost',
+    delay: 150,                 // KLJUČNO za mobitel
+    delayOnTouchOnly: true,     // samo za touch uređaje
+    touchStartThreshold: 5,     // tolerancija pomaka prsta
     onEnd: async () => await updatePoredak()
   });
   
