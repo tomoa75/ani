@@ -77,6 +77,18 @@ async function povuciIzSupabase() {
   });
 }
 
+async function updatePoredak(){
+ 
+    const svi = Array.from(lista.querySelectorAll("li"));
+    for (let i = 0; i < svi.length; i++) {
+      await _supabase
+        .from("todo_tasks")
+        .update({ poredak: i })
+        .eq("id", Number(svi[i].dataset.id));
+    }
+
+}
+
 // --- DODAJ ZADATAK ---
 gumbDodaj.addEventListener("click", async () => {
   const tekst = unos.value.trim();
@@ -118,14 +130,7 @@ lista.addEventListener("click", async (e) => {
     if (!onajIznad) return;
     lista.insertBefore(li, onajIznad);
 
-    // update poredak u bazi
-    const svi = Array.from(lista.querySelectorAll("li"));
-    for (let i = 0; i < svi.length; i++) {
-      await _supabase
-        .from("todo_tasks")
-        .update({ poredak: i })
-        .eq("id", Number(svi[i].dataset.id));
-    }
+    await updatePoredak();
     return;
   }
 
@@ -135,14 +140,7 @@ lista.addEventListener("click", async (e) => {
     if (!onajIspod) return;
     lista.insertBefore(onajIspod, li);
 
-    // update poredak u bazi
-    const svi = Array.from(lista.querySelectorAll("li"));
-    for (let i = 0; i < svi.length; i++) {
-      await _supabase
-        .from("todo_tasks")
-        .update({ poredak: i })
-        .eq("id", Number(svi[i].dataset.id));
-    }
+    await updatePoredak();
     return;
   }
 
@@ -190,16 +188,33 @@ izbor.addEventListener("change", async () => {
 
 // --- DOM CONTENT LOADED ---
 document.addEventListener("DOMContentLoaded", async () => {
+  
   osvjeziNaslov();
   await povuciIzSupabase();
+  new Sortable(lista, {
+    animation: 150,
+    ghostClass: 'ghost',
+    onEnd: async () => await updatePoredak()
+  });
+  
 });
 
 // --- (OPCIONALNO) Supabase Realtime ---
+let refreshT;
+
 _supabase
   .channel('tasks')
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: 'todo_tasks' },
-    () => { povuciIzSupabase(); }
+    () => {
+      clearTimeout(refreshT);
+      refreshT=setTimeout(povuciIzSupabase,300);
+      
+
+    }
   )
   .subscribe();
+
+
+
