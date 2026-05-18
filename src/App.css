@@ -1,0 +1,19 @@
+body{
+   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.navigacija{
+  display: flex;
+  justify-content: space-between;
+ 
+  font-size: 32px;
+}
+.navigacija a{
+  color: black;
+  text-decoration: none;
+  background-color: rgb(207, 203, 203);
+  border-radius: 20px;
+  width: 24%;
+  padding: 3px;
+  text-align: center;
+  font-weight: 900;
+}
