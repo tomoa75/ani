@@ -1,13 +1,37 @@
-body{
-   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+/* 1. Uvoz svih 10 fontova s Google Fontsa */
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC&family=Architects+Daughter&family=Dancing+Script&family=Indie+Flower&family=Marck+Script&family=Nothing+You+Could+Do&family=Patrick+Hand&family=Satisfy&family=Shadows+Into+Light&family=Yellowtail&display=swap");
+
+.krasopis {
+  /* Koristi varijablu koju React stalno ažurira */
+  font-family: var(--font);
+  font-size: 1.8rem;
+  font-weight: 400;
+  transition: font-family 0.3s ease;
 }
-.navigacija{
+body {
+  font-family:
+    "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+header {
+  text-align: center;
+  padding: 20px;
+  height: 40vh;
+}
+.trafika-logo {
+  font-family: "Yellowtail", cursive;
+  font-size: 48px;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.navigacija {
   display: flex;
   justify-content: space-between;
- 
+
   font-size: 32px;
 }
-.navigacija a{
+.navigacija a {
   color: black;
   text-decoration: none;
   background-color: rgb(207, 203, 203);
@@ -16,4 +40,13 @@ body{
   padding: 3px;
   text-align: center;
   font-weight: 900;
+}
+.font-switcher {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
